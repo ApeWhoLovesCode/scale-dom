@@ -1,0 +1,1 @@
+export const IS_OPEN = "LHH-SCALE-DOM-OPEN"
