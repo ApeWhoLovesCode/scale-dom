@@ -1,9 +1,0 @@
-.browser-mask {
-  position: fixed;
-  top: -1rem;
-  left: -1rem;
-  width: 0;
-  height: 0;
-  transition: all ease 0.3s;
-  z-index: 999999;
-}
