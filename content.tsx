@@ -11,66 +11,87 @@ export default function Content() {
   const scaleV = useRef(1)
 
   useEffect(() => {
-    console.log('useEffect isOpen: ', isOpen);
     if (!isOpen) return
     let wheelTimer: NodeJS.Timeout | null = null
-    let isCtrl = false;
-    const onKeyDown = (e: KeyboardEvent) => {
-      console.log('1111onKeyDown: ', e);
-      if(e.ctrlKey) {
-        // e.stopPropagation()
-        // e.preventDefault()
-        isCtrl = true
-      }
-    }
 
-    const onkeyUp = (e: KeyboardEvent) => {
-      if(!e.ctrlKey) {
-        isCtrl = false
-      }
+    let iframe: HTMLIFrameElement
+    let iframeDocument: Document
+    const getIframe = () => {
+      iframe = document.querySelector(domKey) as HTMLIFrameElement
+      iframeDocument = iframe?.contentDocument
     }
+    getIframe()
+    if(!iframe || !iframeDocument) return
+
+    const iframeBody = iframeDocument?.querySelector('body')
+    if (iframeBody) {
+      scrollDom.current = iframeBody
+    }
+    // let isCtrl = false;
+    // const onKeyDown = (e: KeyboardEvent) => {
+    //   if(e.ctrlKey) {
+    //     e.stopPropagation()
+    //     e.preventDefault()
+    //     isCtrl = true
+    //   }
+    // }
+
+    // const onkeyUp = (e: KeyboardEvent) => {
+    //   if(!e.ctrlKey) {
+    //     isCtrl = false
+    //   }
+    // }
 
     const onMousewheel = (e: WheelEvent) => {
-      // const isCtrl = e.ctrlKey
-      console.log('=====isCtrl: ', isCtrl);
+      const isCtrl = e.ctrlKey
       if (!scrollDom.current || !isCtrl) return
       // e.stopPropagation()
-      // if(isCtrl) {
-      //   e.preventDefault();
-      // }
+      e.preventDefault();
       if (wheelTimer) {
         clearTimeout(wheelTimer)
       }
       wheelTimer = setTimeout(() => {
-        const sv = e.deltaY > 0 ? 1 : -1
+        const sv = e.deltaY > 0 ? -1 : 1
         scaleV.current += sv * 0.1
         scrollDom.current.style.transform = `scale(${scaleV.current})`
-      }, 200)
+      }, 10)
     }
 
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onkeyUp);
-    // window.addEventListener("mousewheel", onMousewheel, { passive: false })
-    window.addEventListener("mousewheel", onMousewheel)
+    // window.addEventListener("keydown", onKeyDown);
+    // window.addEventListener("keyup", onkeyUp);
+    // nav 点击时要重新监听 iframe
+    iframeDocument.addEventListener("mousewheel", onMousewheel, { passive: false })
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onkeyUp);
+      // window.removeEventListener("keydown", onKeyDown);
+      // window.removeEventListener("keyup", onkeyUp);
+      iframeDocument.removeEventListener("mousewheel", onMousewheel)
+    }
+  }, [isOpen, domKey])
+
+  useEffect(() => {
+    // 阻止 window 的元素缩放，即侧边栏
+    const onMousewheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return
+      e.preventDefault();
+    }
+    window.addEventListener("mousewheel", onMousewheel, { passive: false })
+    return () => {
       window.removeEventListener("mousewheel", onMousewheel)
     }
   }, [isOpen])
 
-  useEffect(() => {
-    // https://u.pmdaniu.com/xn98z
-    setTimeout(() => {
-      const iframe = document.querySelector(domKey) as HTMLIFrameElement
-      const iframeDocument = iframe?.contentDocument
-      const dom = iframeDocument?.querySelector('body')
-      console.log("====scrollDom: ", dom)
-      if (dom) {
-        scrollDom.current = dom
-      }
-    }, 100);
-  }, [domKey])
+  // useEffect(() => {
+  //   // https://u.pmdaniu.com/xn98z
+  //   setTimeout(() => {
+  //     const iframe = document.querySelector(domKey) as HTMLIFrameElement
+  //     const iframeDocument = iframe?.contentDocument
+  //     const dom = iframeDocument?.querySelector('body')
+  //     console.log("====scrollDom: ", dom)
+  //     if (dom) {
+  //       scrollDom.current = dom
+  //     }
+  //   }, 100);
+  // }, [domKey])
 
   return <></>
 }
