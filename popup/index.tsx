@@ -4,7 +4,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { DOM_KEY, IS_OPEN } from "~common/storage"
 
 import Radio from "./components/Radio"
-import Button from "./components/Button"
+// import Button from "./components/Button"
 
 import "./style.css"
 import { INIT_STATE } from "~common/state"
@@ -18,10 +18,10 @@ function IndexPopup() {
     setDomKeyState(domKey)
   }, [domKey])
 
-  const setDefault = () => {
-    setDomKeyState(INIT_STATE.domKey)
-    setDomKey(INIT_STATE.domKey)
-  }
+  // const setDefault = () => {
+  //   setDomKeyState(INIT_STATE.domKey)
+  //   setDomKey(INIT_STATE.domKey)
+  // }
 
   return (
     <div className="bg-black text-white p-4 w-64 text-sm select-none">
@@ -29,7 +29,7 @@ function IndexPopup() {
         <Radio checked={isOpen} onChange={setIsOpen} />
         <span className="ml-2">启用插件</span>
       </div>
-      <div className="mb-1">选择元素</div>
+      {/* <div className="mb-1">选择元素</div>
       <input
         value={domKeyState}
         onChange={(e) => setDomKeyState(e.target.value)}
@@ -39,7 +39,7 @@ function IndexPopup() {
       />
       <div className="mt-2">
         <Button className="text-xs" onClick={setDefault}>恢复默认</Button>
-      </div>
+      </div> */}
     </div>
   )
 }

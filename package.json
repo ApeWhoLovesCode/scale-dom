@@ -2,7 +2,7 @@
   "name": "scale-dom",
   "displayName": "Scale dom",
   "version": "0.0.1",
-  "description": "A basic Plasmo extension.",
+  "description": "Scaling elements in an iframe",
   "author": "LHH. <970519495@qq.com>",
   "scripts": {
     "dev": "plasmo dev",
