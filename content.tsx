@@ -11,58 +11,65 @@ export default function Content() {
   const scaleV = useRef(1)
 
   useEffect(() => {
+    console.log('useEffect isOpen: ', isOpen);
     if (!isOpen) return
     let wheelTimer: NodeJS.Timeout | null = null
-    // let isCtrl = false;
-    // const onKeyDown = (e: KeyboardEvent) => {
-    //   if(e.ctrlKey) {
-    //     e.stopPropagation()
-    //     e.preventDefault()
-    //     isCtrl = true
-    //   }
-    // }
+    let isCtrl = false;
+    const onKeyDown = (e: KeyboardEvent) => {
+      console.log('1111onKeyDown: ', e);
+      if(e.ctrlKey) {
+        // e.stopPropagation()
+        // e.preventDefault()
+        isCtrl = true
+      }
+    }
 
-    // const onkeyUp = (e: KeyboardEvent) => {
-    //   if(!e.ctrlKey) {
-    //     isCtrl = false
-    //   }
-    // }
+    const onkeyUp = (e: KeyboardEvent) => {
+      if(!e.ctrlKey) {
+        isCtrl = false
+      }
+    }
 
     const onMousewheel = (e: WheelEvent) => {
-      const isCtrl = e.ctrlKey
+      // const isCtrl = e.ctrlKey
+      console.log('=====isCtrl: ', isCtrl);
       if (!scrollDom.current || !isCtrl) return
-      e.stopPropagation()
-      if(isCtrl) {
-        e.preventDefault();
-      }
+      // e.stopPropagation()
+      // if(isCtrl) {
+      //   e.preventDefault();
+      // }
       if (wheelTimer) {
         clearTimeout(wheelTimer)
       }
       wheelTimer = setTimeout(() => {
         const sv = e.deltaY > 0 ? 1 : -1
-        if (isCtrl) {
-          scaleV.current += sv * 0.1
-          scrollDom.current.style.transform = `scale(${scaleV.current})`
-        }
+        scaleV.current += sv * 0.1
+        scrollDom.current.style.transform = `scale(${scaleV.current})`
       }, 200)
     }
 
-    // window.addEventListener("keydown", onKeyDown);
-    // window.addEventListener("keyup", onkeyUp);
-    window.addEventListener("mousewheel", onMousewheel, { passive: false })
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onkeyUp);
+    // window.addEventListener("mousewheel", onMousewheel, { passive: false })
+    window.addEventListener("mousewheel", onMousewheel)
     return () => {
-      // window.removeEventListener("keydown", onKeyDown);
-      // window.removeEventListener("keyup", onkeyUp);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onkeyUp);
       window.removeEventListener("mousewheel", onMousewheel)
     }
   }, [isOpen])
 
   useEffect(() => {
-    const dom = document.querySelector(domKey)
-    console.log("====scrollDom: ", dom)
-    if (dom) {
-      scrollDom.current = dom
-    }
+    // https://u.pmdaniu.com/xn98z
+    setTimeout(() => {
+      const iframe = document.querySelector(domKey) as HTMLIFrameElement
+      const iframeDocument = iframe?.contentDocument
+      const dom = iframeDocument?.querySelector('body')
+      console.log("====scrollDom: ", dom)
+      if (dom) {
+        scrollDom.current = dom
+      }
+    }, 100);
   }, [domKey])
 
   return <></>
