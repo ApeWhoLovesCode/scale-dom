@@ -7,12 +7,6 @@ import { useStorage } from "~node_modules/@plasmohq/storage/dist/hook"
 // test
 // https://u.pmdaniu.com/xn98z
 
-/**
- * 待解决问题
- * 1.放大后，部分内容丢失
- * 
- */
-
 export default function Content() {
   const [isOpen] = useStorage<boolean>(IS_OPEN, INIT_STATE.isOpen)
   const [domKey] = useStorage<string>(DOM_KEY, INIT_STATE.domKey)
