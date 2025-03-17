@@ -1,4 +1,4 @@
-import ContentCom from "./content/index";
+import ContentCom from "./content";
 
 // test
 // https://u.pmdaniu.com/xn98z
