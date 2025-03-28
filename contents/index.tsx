@@ -21,9 +21,10 @@ function ContentCom() {
     let scaleV = 1;
 
     let iframeDocument: Document
+    let de: HTMLElement
     // let scrollDom: HTMLElement
 
-    const loopOnIframe = (c: number) => {
+    const loopOnIframe = (c: number = 0) => {
       if (scrollDom.current || c++ > 10) return
       setTimeout(() => {
         onIframeWheel()
@@ -37,17 +38,18 @@ function ContentCom() {
       li.addEventListener('click', () => {
         scrollDom.current = null
         scaleV = 1;
-        loopOnIframe(0)
+        loopOnIframe()
       })
     })
 
     const onIframeWheel = () => {
       if(onMousewheel) {
-        iframeDocument.removeEventListener("mousewheel", onMousewheel)
+        iframeDocument?.removeEventListener("mousewheel", onMousewheel)
       }
 
       const iframe = document.querySelector(domKey) as HTMLIFrameElement
       iframeDocument = iframe?.contentDocument
+      de = iframe.contentWindow.document.documentElement;
       scrollDom.current = iframeDocument?.querySelector('body')
       console.log('=======scrollDom: ', scrollDom.current);
       if(!scrollDom.current) return
@@ -58,7 +60,6 @@ function ContentCom() {
       onMousewheel = (e: WheelEvent) => {
         const isCtrl = e.ctrlKey
         if (!scrollDom.current || !isCtrl) return
-        // e.stopPropagation()
         e.preventDefault();
         if (wheelTimer) {
           clearTimeout(wheelTimer)
@@ -68,13 +69,17 @@ function ContentCom() {
           const _scaleFactor = isNaN(Number(scaleFactor)) ? 0 : Number(scaleFactor)
           scaleV = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scaleV + sv * _scaleFactor))
           scrollDom.current.style.transform = `scale(${scaleV})`
+          // de.scrollTop / de.scrollHeight = 
+          // const vy = de.scrollTop / (de.scrollHeight - de.clientHeight);
+          // const vx = de.scrollLeft / (de.scrollWidth - de.clientWidth);
+          // scrollDom.current.style.transform = `scale(${scaleV}) translate(${e.clientX * (1 - vx)}px, ${e.clientY * (1 - vy)}px)`
         }, 10)
       }
 
       // nav 点击时要重新监听 iframe
       iframeDocument.addEventListener("mousewheel", onMousewheel, { passive: false })
     }
-    onIframeWheel()
+    loopOnIframe()
 
     // iframeDocument.addEventListener("mousewheel", onMousewheel, { passive: false })
     return () => {
